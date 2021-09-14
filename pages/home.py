@@ -9,6 +9,20 @@ import yfinance as yf
 #Data viz
 import plotly.graph_objs as go
 
+def _get_title(ticker):
+    df = get_tickers()
+    tk = df[df['Symbol'].isin([ticker])]
+    id = tk.index[0]
+    name = tk['Name'][id]
+    sector = tk['Sector'][id]
+    industry = tk['Industry'][id]
+
+    title= name + ' ({})</br>'.format(ticker)
+    title += ' </br>Sector: {}'.format(sector)
+    title += ', {}</br>'.format(industry)
+    return title
+
+
 def _view_chart(ticker, interval):
     period = '30d'
     if interval == '1m':
@@ -24,9 +38,16 @@ def _view_chart(ticker, interval):
                     low=data['Low'],
                     close=data['Close'], name = 'market data'))
 
+    df = get_tickers()
+    tk = df[df['Symbol'].isin([ticker])]
+    id = tk.index[0]
+    name = tk['Name'][id]
+    sector = tk['Sector'][id]
+    industry = tk['Industry'][id]
+
     # Add titles
     fig.update_layout(
-        title='Uber live share price evolution',
+        title= _get_title(ticker),
         yaxis_title='Stock Price (USD per Shares)')
 
     # X-Axes
@@ -45,12 +66,19 @@ def _view_chart(ticker, interval):
 
     st.plotly_chart(fig)
 
+@st.cache
+def get_tickers():
+    path = r'static/nasdaq_screener_1631567663733.csv'
+    return pd.read_csv(path)
+
 def app():
     st.markdown("## Home Page")
+    df = get_tickers()
+    tickers = df['Symbol'].drop_duplicates()
 
-    ticker = st.sidebar.text_input('Enter ticker ID!')
+    ticker = st.sidebar.selectbox('Enter ticker ID!', tickers)
     if ticker:
-        interval = st.sidebar.selectbox('Select interval', ['1m','5m','15m','1h','1d'])
+        interval = st.sidebar.selectbox('Select interval', ['1m','5m','15m','1h','1d'], index=4)
 
         if interval:
             _view_chart(

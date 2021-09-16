@@ -1,7 +1,7 @@
 import streamlit as st
 
 from multipage import MultiPage
-from pages import about, hello, home
+from pages import about, eviction, stock
 
 app = MultiPage()
 
@@ -9,8 +9,8 @@ app = MultiPage()
 
 #Add all your applications (pages) here
 
-app.add_page("Home", home.app)
-app.add_page("Hello", hello.app)
+app.add_page("Stock Market", stock.app)
+app.add_page("Eviction data", eviction.app)
 app.add_page("About", about.app)
 
 app.run()

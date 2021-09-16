@@ -38,13 +38,6 @@ def _view_chart(ticker, interval):
                     low=data['Low'],
                     close=data['Close'], name = 'market data'))
 
-    df = get_tickers()
-    tk = df[df['Symbol'].isin([ticker])]
-    id = tk.index[0]
-    name = tk['Name'][id]
-    sector = tk['Sector'][id]
-    industry = tk['Industry'][id]
-
     # Add titles
     fig.update_layout(
         title= _get_title(ticker),
@@ -72,7 +65,7 @@ def get_tickers():
     return pd.read_csv(path)
 
 def app():
-    st.markdown("## Home Page")
+    st.markdown("## Stock Price")
     df = get_tickers()
     tickers = df['Symbol'].drop_duplicates()
 
